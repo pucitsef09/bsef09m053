@@ -1,0 +1,105 @@
+﻿@{
+    Layout = "~/Layouts/_Layout.cshtml";   
+    PageData["title"] = "eShop";    
+
+    var db = Database.Open("eShop"); 
+    var sqlSelect = "SELECT ProductID, Name, Price, ImagePath FROM Products ";
+    var products = db.Query(sqlSelect);
+
+    Session["pageNumber"] = !UrlData[0].IsEmpty()?UrlData[0]:"1"; //if page number 2 than 
+    int pCount = (Convert.ToInt32(Session["pageNumber"]) * 6) - 5;
+    int range = pCount + 5; // show products from pCount to range 
+
+    int count = 0;
+    foreach(var item in products)
+    {
+        count++;
+    }
+    
+    int pc = 0;
+    // products to display = (page number * page size) - 5    
+    
+}
+
+
+      <div class="row">
+
+  <!-- Side Bar -->
+
+        <div class="four mobile-four columns">
+
+          <img src="~/Shared/images/logo2.jpg">
+
+          <div class="hide-for-small panel">
+            <h3>Introduction</h3>
+            <h5 class="subheader">Online shopping website where things can be bought via internet. 
+            </h5>
+              
+          </div>
+
+        </div>
+
+    <!-- End Side Bar -->
+
+    <!-- Thumbnails -->
+    
+        <div class="eight columns">
+          <div class="row">
+            @foreach (var item in products) {
+                pc++;
+                if(pc >= pCount && pc <= range){ 
+                <div class="four mobile-two columns">
+                  <a href="/ProductDetails/@item.ProductID"><img id="gallery" class="fancyzoom" alt="Image not available" src="@item.ImagePath"></a>
+
+                  <div class="panel">
+                   <a href="/ProductDetails/@item.ProductID"> <h5>@item.Name</h5></a>
+
+                    <h6 class="subheader">£@item.Price</h6>
+                      <div><a href="~/User/ShoppingCart/@item.ProductID">add to cart</a></div>
+                  </div>                    
+                </div>
+                }
+            }
+        
+
+    <!-- End Thumbnails -->
+
+          </div>
+        </div>
+      </div>
+        <p><br></p>
+            <div style="margin-left: 50%">
+                @for(double i = 1; i<= Math.Ceiling((double)count/6); i++)
+                {
+                    if(i == 1){<a href="~/default" style="font-size: large">| @i |</a>}
+                    else{
+                    <a href="~/default/@i" style="font-size: large"> @i |</a>}
+                }
+            </div>
+        <p><br><br></p>
+    </div>
+  </div>
+ 
+<script type="text/javascript">
+    $(function() {
+	
+    //Set the default directory to find the images needed
+    //by the plugin (closebtn.png, blank.gif, loading images ....)
+    $.fn.fancyzoom.defaultsOptions.imgDir='~/Shared/images/';//very important must finish
+    //with a /
+
+    // Select all links in object with gallery ID using the defaults options
+    $('#gallery a').fancyzoom(); 
+
+    // Select all links with tozoom class, set the open animation time to 1000
+    $('a.tozoom').fancyzoom({Speed:1000});
+
+    // Select all links set the overlay opacity to 80%
+    $('a').fancyzoom({overlay:0.8});
+
+    //New, you can now apply the fancy zoom effect on an image
+    //apply the fancyzoom effect on all images that have the fancyzoom class
+    $("img.fancyzoom").fancyzoom();
+
+    });
+</script>

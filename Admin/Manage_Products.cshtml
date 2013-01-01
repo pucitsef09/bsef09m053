@@ -1,0 +1,92 @@
+﻿@{
+    Layout = "~/Layouts/_Layout.cshtml";   
+    PageData["title"] = "Manage Products";
+
+    var db = Database.Open("eShop"); 
+    var sqlSelect = "SELECT ProductID, Name, Price, ImagePath FROM Products ";
+    var products = db.Query(sqlSelect);
+    
+    var pgN = !UrlData[0].IsEmpty()?UrlData[0]:"1"; //if page number 2 than 
+    int pCount = (Convert.ToInt32(pgN) * 6) - 5;
+    int range = pCount + 5; // show products from pCount to range 
+
+    int count = 0;
+    foreach(var item in products)
+    {
+        count++;
+    }
+    
+    int pc = 0;    
+  
+}
+
+
+      <div class="row">
+
+        <!-- Side Bar -->
+
+        <div class="four mobile-four columns">
+
+          <img src="~/Shared/images/logo2.jpg">
+
+          <div class="hide-for-small panel">
+            <h3>Introduction</h3>
+            <h5 class="subheader">Online shopping website where things can be bought via internet. 
+            </h5>
+          </div>          
+
+          <a href="~/Admin/Add_Product">
+              <div class="panel callout radius" align="center">
+                <h6>Add Product</h6>
+              </div>
+          </a>
+          <a href="~/Admin/Categories">
+              <div class="panel callout radius" align="center">
+                <h6>Categories</h6>
+              </div>
+          </a>
+
+        </div>
+
+    <!-- End Side Bar -->
+
+    <!-- Thumbnails -->
+    
+        <div class="eight columns">
+          <div class="row">
+            @foreach (var item in products) { 
+                pc++;
+                if(pc >= pCount && pc <= range){ 
+                <div class="four mobile-two columns">
+                  <a href="/ProductDetails/@item.ProductID"><img alt="Image not available" src="~/@item.ImagePath" width="200" height="100"></a>
+
+                  <div class="panel">
+                   <a href="~/ProductDetails/@item.ProductID"> <h5>@item.Name</h5></a>
+
+                    <h6 class="subheader">@item.Price</h6>
+                      <div>
+                        <a href="~/Admin/Update_Product/@item.ProductID"><img src="~/Shared/images/update.jpg" alt="update" title="Update"></a>
+                        <a href="~/Admin/Delete_Product/@item.ProductID"><img src="~/Shared/images/delete.jpg" alt="delete" title="Delete"></a>
+                    </div>
+                  </div>                    
+                </div>     
+               }            
+            }
+ 
+    <!-- End Thumbnails -->
+
+          </div>
+        </div>
+      </div>
+        <p><br></p>
+            <div style="margin-left: 50%">
+                @for(double i = 1; i<= Math.Ceiling((double)count/6); i++)
+                {
+                    if(i == 1){<a href="~/Admin/Manage_Products" style="font-size: large">| @i |</a>}
+                    else{
+                    <a href="~/Admin/Manage_Products/@i" style="font-size: large"> @i |</a>}
+                }
+            </div>
+        <p><br><br></p>
+    </div>
+  </div>
